@@ -1,0 +1,66 @@
+
+html, body{
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+:root {
+  --primary : #0D392E;
+  --secondary : #CED7E5;
+}
+
+.skoda-custom {
+  color: var(--primary);
+}
+
+.navbar-custom {
+  background-color: var(--secondary);
+  top: 0;
+  width: 100%;
+  position: fixed;
+  
+  
+}
+th, td{
+  text-align: center;
+}
+.inputs-bar{
+  text-align: center;
+}
+form input {
+  justify-content: center;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+form label {
+  padding-right: 5px
+}
+
+button{
+  border-radius: 4px;
+  background-color: #0D392E;
+  color: #CED7E5;
+  margin-left: 20px;
+}
+
+.stats-bar {
+  text-align: center;
+  color: var(--primary);
+  font-weight: bold;
+  font-size: large;
+}
+
+.stats-bar li {
+  display: inline-block;
+  text-decoration: none;
+  padding: 10px 20px;
+
+}
+
+h3{
+  padding-top: 100px;
+}
+
+
+
