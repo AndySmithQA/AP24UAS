@@ -49,6 +49,16 @@
       "difference": 93,
       "monthlyMilage": 794,
       "maxAllowance": 666
+    },
+    {
+      "id": "fcfe",
+      "currentMonth": "Jan-25",
+      "max": 3997,
+      "actual": "3687",
+      "percentage": "92.24",
+      "difference": 310,
+      "monthlyMilage": 449,
+      "maxAllowance": 666
     }
   ]
 }
