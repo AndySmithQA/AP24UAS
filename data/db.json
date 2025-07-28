@@ -59,6 +59,66 @@
       "difference": 310,
       "monthlyMilage": 449,
       "maxAllowance": 666
+    },
+    {
+      "id": "67c2",
+      "currentMonth": "Feb-25",
+      "max": 4663,
+      "actual": "4400",
+      "percentage": "94.36",
+      "difference": 263,
+      "monthlyMilage": 713,
+      "maxAllowance": 666
+    },
+    {
+      "id": "e019",
+      "currentMonth": "Mar-25",
+      "max": 5329,
+      "actual": "4876",
+      "percentage": "91.50",
+      "difference": 453,
+      "monthlyMilage": 476,
+      "maxAllowance": 666
+    },
+    {
+      "id": "ca35",
+      "currentMonth": "Apr-25",
+      "max": 5995,
+      "actual": "6169",
+      "percentage": "102.90",
+      "difference": -174,
+      "monthlyMilage": 1293,
+      "maxAllowance": 666
+    },
+    {
+      "id": "18ac",
+      "currentMonth": "May-25",
+      "max": 6661,
+      "actual": "6656",
+      "percentage": "99.92",
+      "difference": 5,
+      "monthlyMilage": 487,
+      "maxAllowance": 666
+    },
+    {
+      "id": "3ebe",
+      "currentMonth": "Jun-25",
+      "max": 7327,
+      "actual": "7297",
+      "percentage": "99.59",
+      "difference": 30,
+      "monthlyMilage": 641,
+      "maxAllowance": 666
+    },
+    {
+      "id": "8869",
+      "currentMonth": "Jul-25",
+      "max": 7993,
+      "actual": "7800",
+      "percentage": "97.59",
+      "difference": 193,
+      "monthlyMilage": 503,
+      "maxAllowance": 666
     }
   ]
 }
