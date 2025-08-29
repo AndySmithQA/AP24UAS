@@ -119,6 +119,16 @@
       "difference": 193,
       "monthlyMilage": 503,
       "maxAllowance": 666
+    },
+    {
+      "id": "d02f",
+      "currentMonth": "Aug-25",
+      "max": 8659,
+      "actual": "8460",
+      "percentage": "97.70",
+      "difference": 199,
+      "monthlyMilage": 660,
+      "maxAllowance": 666
     }
   ]
 }
