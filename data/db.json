@@ -169,6 +169,16 @@
       "difference": 93,
       "monthlyMilage": 765,
       "maxAllowance": 666
+    },
+    {
+      "id": "c720",
+      "currentMonth": "Jan-26",
+      "max": 11989,
+      "actual": "11817",
+      "percentage": "98.57",
+      "difference": 172,
+      "monthlyMilage": 587,
+      "maxAllowance": 666
     }
   ]
 }
