@@ -6,13 +6,36 @@ export default function Input(){
     const [currentMonth, setCurrentMonth] = useState('')
     const [actual, setActual] = useState()
 
+    const normalizeMonthLabel = (label) => {
+        const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const [monthPart, yearPart] = (label || "").split("-");
+        const monthValue = monthPart?.trim();
+        const yearValue = yearPart?.trim();
+
+        if (!monthValue || !yearValue) return null;
+
+        const monthKey = monthValue.slice(0, 3);
+        const month = MONTHS.find((m) => m.toLowerCase() === monthKey.toLowerCase());
+        const year = Number(yearValue);
+
+        if (!month || Number.isNaN(year)) return null;
+
+        return `${month}-${String(year).slice(-2)}`;
+    }
+
     useFetch("http://localhost:3001/months", setCalcData)
     
     const handleSubmit = async (event) =>{
-        if (!actual | !currentMonth) {
+        if (!actual || !currentMonth) {
             alert("Please Enter Data")
         } else {
         event.preventDefault()
+
+        const formattedMonth = normalizeMonthLabel(currentMonth)
+        if (!formattedMonth) {
+            alert("Month label must be in format MMM-YY, for example Aug-26")
+            return
+        }
 
         const max = calcData[calcData.length - 1].max + 666
         const percentage = (actual/max *100).toFixed(2)
@@ -20,7 +43,7 @@ export default function Input(){
         const monthlyMilage = (actual - calcData[calcData.length - 1].actual);
         const maxAllowance = 666
         
-        const record = {currentMonth, max, actual, percentage, difference, monthlyMilage, maxAllowance}
+        const record = {currentMonth: formattedMonth, max, actual, percentage, difference, monthlyMilage, maxAllowance}
 
         fetch('http://localhost:3001/months', {
                 method: 'POST',
