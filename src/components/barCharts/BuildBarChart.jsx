@@ -1,20 +1,15 @@
 import Chart from "chart.js/auto";
 import {CategoryScale} from "chart.js";
-import useFetch from '../useFetch'
+import PropTypes from "prop-types";
 import BarChart from "./BarChart";
-import { useState } from "react";
+import { useMemo } from "react";
 
 
 Chart.register(CategoryScale);
 
-export default function ShowBarGraph(){
-    const [chartData, setChartData] = useState(null); 
-
-    const initChartData = (data) => {
-        if (!data?.length) {
-            setChartData(null);
-            return;
-        }
+export default function ShowBarGraph({ months }){
+    const chartData = useMemo(() => {
+        if (!months.length) return null;
 
         const MONTHS_IN_YEAR = 12;
         const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -47,10 +42,9 @@ export default function ShowBarGraph(){
             };
         };
 
-        const start = parseMonthLabel(data[0].currentMonth);
+        const start = parseMonthLabel(months[0].currentMonth);
         if (!start) {
-            setChartData(null);
-            return;
+            return null;
         }
 
         const labels = Array.from({ length: MONTHS_IN_YEAR }, (_, index) =>
@@ -62,7 +56,7 @@ export default function ShowBarGraph(){
         const year3Data = Array(MONTHS_IN_YEAR).fill(null);
         const maxAllowanceByMonth = Array(MONTHS_IN_YEAR).fill(null);
 
-        data.forEach((entry) => {
+        months.forEach((entry) => {
             const parsed = parseMonthLabel(entry.currentMonth);
             if (!parsed) return;
 
@@ -84,7 +78,7 @@ export default function ShowBarGraph(){
             }
         });
 
-        setChartData({
+        return {
             labels,
             datasets: [{
                 type: 'bar',
@@ -120,15 +114,20 @@ export default function ShowBarGraph(){
                 pointRadius: 0
             }
         ]
-        });
-        
-    };
-    
-    useFetch("http://localhost:3001/months", initChartData);
+        };
+    }, [months]);
     
     return (
         <div className="App">
             {chartData && <BarChart chartData={chartData}/>}
         </div>
     );
+}
+
+ShowBarGraph.propTypes = {
+    months: PropTypes.arrayOf(PropTypes.shape({
+        currentMonth: PropTypes.string.isRequired,
+        monthlyMilage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        maxAllowance: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+    })).isRequired
 }

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Line } from "react-chartjs-2";
 
 function LineChart({ chartData }) {
@@ -39,4 +40,9 @@ function LineChart({ chartData }) {
     </div>
   );
 }
+
+LineChart.propTypes = {
+  chartData: PropTypes.object.isRequired
+};
+
 export default LineChart;

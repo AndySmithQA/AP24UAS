@@ -1,22 +1,19 @@
 import Chart from "chart.js/auto";
 import {CategoryScale} from "chart.js";
-import useFetch from '../useFetch'
+import PropTypes from "prop-types";
 import LineChart from "./LineChart";
-import { useState } from "react";
+import { useMemo } from "react";
 
 Chart.register(CategoryScale);
 
-export default function ShowGraph(){
-    const [chartData, setChartData] = useState(null);
-
-    const initChartData = (data) => {
-        setChartData({
-            labels: data.map((month) => month.currentMonth),
+export default function ShowGraph({ months }){
+    const chartData = useMemo(() => ({
+            labels: months.map((month) => month.currentMonth),
             datasets: [
                 {
                     label: "Monthly Milage",
                     yAxisID: 'milage',
-                    data: data.map((month) => month.max),
+                    data: months.map((month) => month.max),
                     backgroundColor: [
                         "blue"
                     ],
@@ -27,7 +24,7 @@ export default function ShowGraph(){
                 {
                     label: "Actual Milage",
                     yAxisID: 'milage',
-                    data: data.map((month) => month.actual),
+                    data: months.map((month) => month.actual),
                     backgroundColor: [
                         "red"
                     ],
@@ -38,7 +35,7 @@ export default function ShowGraph(){
                 {
                     label: "Percentage",
                     yAxisID: "percentage",
-                    data: data.map((month) => month.percentage),
+                    data: months.map((month) => month.percentage),
                     borderColor: "#0D392E",
                     backgroundColor: [
                         "#0D392E"
@@ -47,14 +44,20 @@ export default function ShowGraph(){
                     pointRadius: 0
                 }
             ]
-        });
-    };
-
-    useFetch("http://localhost:3001/months", initChartData);
+        }), [months]);
 
     return (
         <div className="App">
             {chartData && <LineChart chartData={chartData}/>}
         </div>
     );
+}
+
+ShowGraph.propTypes = {
+    months: PropTypes.arrayOf(PropTypes.shape({
+        currentMonth: PropTypes.string.isRequired,
+        max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        actual: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        percentage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
+    })).isRequired
 }

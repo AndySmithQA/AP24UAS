@@ -1,23 +1,14 @@
-import { useState } from "react";
-import useFetch from "./useFetch";
+import PropTypes from "prop-types";
 
-export default function Stats(){
-    const [data, setData] = useState([])
-
-    useFetch('http://localhost:3001/months', setData)
-
-  
-
-    const statMaxMilage = data.map(ent =>
-        ent.monthlyMilage
-        )
-    const statTotalMilage = data.map(ent =>
-        ent.actual
-        )
-    const maximum = Math.max(...statMaxMilage)
-    const minimum = Math.min(...statMaxMilage)
-    const total = Math.max(...statTotalMilage)
-    const average = (total / statTotalMilage.length)
+export default function Stats({ months }){
+    const monthlyMileage = months
+        .map((month) => Number(month.monthlyMilage))
+        .filter(Number.isFinite)
+    const maximum = monthlyMileage.length ? Math.max(...monthlyMileage) : '--'
+    const minimum = monthlyMileage.length ? Math.min(...monthlyMileage) : '--'
+    const average = monthlyMileage.length
+        ? (monthlyMileage.reduce((total, mileage) => total + mileage, 0) / monthlyMileage.length).toFixed()
+        : '--'
    
    
     return (
@@ -28,11 +19,17 @@ export default function Stats(){
                         <ul>
                             <li>Highest Monthly Mileage - {maximum}</li>
                             <li>Lowest Monthly Mileage - {minimum}</li>
-                            <li>Average Monthly Mileage - {average.toFixed()}</li>
+                            <li>Average Monthly Mileage - {average}</li>
                         </ul>
                 </div>
                 </div>
             </div>
       </div>  
     )
+}
+
+Stats.propTypes = {
+    months: PropTypes.arrayOf(PropTypes.shape({
+        monthlyMilage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
+    })).isRequired
 }

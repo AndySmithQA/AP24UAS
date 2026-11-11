@@ -1,12 +1,7 @@
-import { useState} from 'react'
-import useFetch from './useFetch'
+import PropTypes from 'prop-types';
 import { Table } from 'react-bootstrap';
 
-export default function BuildTable(){
-    const [rows, setRows] = useState([])
-
-    useFetch("http://localhost:3001/months", setRows)
-
+export default function BuildTable({ months }){
     return (
        <Table striped hover>
             <thead>
@@ -20,7 +15,7 @@ export default function BuildTable(){
                 </tr>
                 </thead>
                 <tbody>
-                    {rows?.map(row =>
+                    {months.map(row =>
                         <tr key={row.id}>
                             <td>{row.currentMonth}</td>
                             <td>{row.max}</td>
@@ -36,4 +31,16 @@ export default function BuildTable(){
        </Table>
         
     )
+}
+
+BuildTable.propTypes = {
+    months: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        currentMonth: PropTypes.string.isRequired,
+        max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        actual: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        percentage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        difference: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        monthlyMilage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
+    })).isRequired
 }

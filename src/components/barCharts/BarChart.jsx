@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Bar } from "react-chartjs-2";
 
 function BarChart({ chartData }) {
@@ -20,6 +21,10 @@ function BarChart({ chartData }) {
       />
     </div>
   );
+}
+
+BarChart.propTypes = {
+  chartData: PropTypes.object.isRequired
 };
 
 export default BarChart;

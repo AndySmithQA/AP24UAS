@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import  useFetch  from './useFetch'
+import PropTypes from 'prop-types'
 
-export default function Input(){
-    const [calcData, setCalcData] = useState([])
+export default function Input({ months, onMonthAdded }){
     const [currentMonth, setCurrentMonth] = useState('')
-    const [actual, setActual] = useState()
+    const [actual, setActual] = useState('')
+    const [submissionError, setSubmissionError] = useState('')
+    const [isSubmitting, setIsSubmitting] = useState(false)
 
     const normalizeMonthLabel = (label) => {
         const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -23,13 +24,14 @@ export default function Input(){
         return `${month}-${String(year).slice(-2)}`;
     }
 
-    useFetch("http://localhost:3001/months", setCalcData)
-    
     const handleSubmit = async (event) =>{
+        event.preventDefault()
+        setSubmissionError('')
+
         if (!actual || !currentMonth) {
             alert("Please Enter Data")
-        } else {
-        event.preventDefault()
+            return
+        }
 
         const formattedMonth = normalizeMonthLabel(currentMonth)
         if (!formattedMonth) {
@@ -37,22 +39,47 @@ export default function Input(){
             return
         }
 
-        const max = calcData[calcData.length - 1].max + 666
-        const percentage = (actual/max *100).toFixed(2)
-        const difference = (max - actual)
-        const monthlyMilage = (actual - calcData[calcData.length - 1].actual);
+        const lastMonth = months[months.length - 1]
+        if (!lastMonth) {
+            setSubmissionError('Monthly data is not available yet.')
+            return
+        }
+
+        const actualValue = Number(actual)
+        if (!Number.isFinite(actualValue) || actualValue < 0) {
+            setSubmissionError('Total miles must be a non-negative number.')
+            return
+        }
+
+        const max = Number(lastMonth.max) + 666
+        const percentage = (actualValue / max * 100).toFixed(2)
+        const difference = max - actualValue
+        const monthlyMilage = actualValue - Number(lastMonth.actual)
         const maxAllowance = 666
         
-        const record = {currentMonth: formattedMonth, max, actual, percentage, difference, monthlyMilage, maxAllowance}
+        const record = {currentMonth: formattedMonth, max, actual: actualValue, percentage, difference, monthlyMilage, maxAllowance}
 
-        fetch('http://localhost:3001/months', {
+        setIsSubmitting(true)
+        try {
+            const response = await fetch('http://localhost:3001/months', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json"},
                 body: JSON.stringify(record)
             })
-            .then(() =>{
-                window.location.reload()
-            })
+
+            if (!response.ok) {
+                throw new Error(`Request failed with status ${response.status}`)
+            }
+
+            const savedMonth = await response.json()
+            onMonthAdded(savedMonth)
+            setCurrentMonth('')
+            setActual('')
+        } catch (error) {
+            console.error('[ERROR] Cannot save monthly data', error)
+            setSubmissionError(error instanceof Error ? error.message : 'Unable to save monthly data.')
+        } finally {
+            setIsSubmitting(false)
         }
     }
 
@@ -70,13 +97,27 @@ export default function Input(){
                 />
                 <label>Total Miles: </label>
                 <input 
-                    type="text"
+                    type="number"
+                    min="0"
+                    step="any"
+                    required
                     value={actual} 
                     onChange={(e) => setActual(e.target.value)}
                     placeholder='enter milage'
                 />
-                <button type='submit'>Enter Updates</button>
+                <button type='submit' disabled={isSubmitting || months.length === 0}>
+                    {isSubmitting ? 'Saving...' : 'Enter Updates'}
+                </button>
+                {submissionError && <p className="text-danger" role="alert">{submissionError}</p>}
             </div>
         </form>
     )
+}
+
+Input.propTypes = {
+    months: PropTypes.arrayOf(PropTypes.shape({
+        max: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+        actual: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired
+    })).isRequired,
+    onMonthAdded: PropTypes.func.isRequired
 }
